@@ -1,0 +1,107 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%
+    String path = request.getContextPath();
+    String basePath = request.getScheme() + "://"
+            + request.getServerName() + ":" + request.getServerPort()
+            + path + "/";
+%>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>login</title>
+
+    <script src="https://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+
+    <style type="text/css">
+        body {
+            background: url("../../../bootstrap/img/book.jpg");
+        }
+
+        .form {
+            background: rgba(255, 255, 255, 0.2);
+            width: 400px;
+            margin: 150px auto;
+        }
+    </style>
+
+    <script>
+        function register(){
+            window.open("register", "_self");
+        }
+
+        function login() {
+
+            var userName = $('#user').val();
+            var password = $('#password').val();
+
+            $.ajax({
+                type: "post",  //post put get 等等
+                url: "login",
+                async:false,
+                dataType:"json",
+                data: {
+                    "userName": userName,
+                    "password": password
+                },
+                success: function (data) {
+                    if("success" == data.type){
+                        /* window.parent.location.href = "index";*/
+                        alert(data.msg+"")
+
+                        /*window.open("toHome", "_self");*/
+                        window.location.href="http://localhost:8080/system/toHome";
+
+                    } else{
+                        /* $.messager.alert("消息提醒", data.msg, "warning");
+                         $("#vcodeImg").click();//切换验证码
+                         $("input[name='vcode']").val("");//清空验证码输入框*/
+                        alert(data.msg+"");
+
+                    }
+
+                },
+
+            });
+        }
+    </script>
+
+</head>
+
+<body>
+<div class="container">
+
+        <div class="form row">
+            <div class="form-horizontal col-md-offset-3" id="login_form">
+                <h3 class="form-title">LOGIN</h3>
+                <div class="col-md-9">
+                    <div class="form-group">
+                        <i class="fa fa-user fa-lg"></i>
+                        <input class="form-control required" type="text" placeholder="Username" id="user" name="username" autofocus="autofocus" maxlength="20" />
+                    </div>
+                    <div class="form-group">
+                        <i class="fa fa-lock fa-lg"></i>
+                        <input class="form-control required" type="password" placeholder="Password" id="password" name="password" maxlength="8" />
+                    </div>
+                    <div class="form-group">
+                        <label class="checkbox">
+                            <input type="checkbox" name="remember" value="1"/>记住我
+                        </label>
+                    </div>
+                    <div class="form-group col-md-offset-9">
+                        <button type="submit" class="btn btn-success pull-right" name="submit" onclick="login()">登录</button>
+                        <button type="button" class="btn btn-link" onclick="register()">注册</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+</div>
+</body>
+
+</html>
