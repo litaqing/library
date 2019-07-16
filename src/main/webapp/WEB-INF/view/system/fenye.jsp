@@ -1,26 +1,39 @@
-<!DOCTYPE html>
+<%@page contentType="text/html"%>
+<%@page pageEncoding="UTF-8"%>
 <html>
 <head>
 	<meta charset="utf-8">
 	<title>使用vue2.0与bootstrap3进行简单列表分页</title>
 	<link href="http://v3.bootcss.com/dist/css/bootstrap.min.css" rel="stylesheet">
-	<script type="text/javascript" src="https://cn.vuejs.org/js/vue.js"></script>
+	<%--<script type="text/javascript" src="https://cn.vuejs.org/js/vue.js"></script>--%>
+	<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+	<script src="https://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
 </head>
 <body>
-
+<div class="input-group">
+	<input type="text" class="form-control" id="findName">
+	<span class="input-group-addon">搜索</span>
+</div>
 <div class="bs-example" id="table">
 	<table class="table table-striped">
 		<thead>
 		<tr>
 			<th>#</th>
-			<th>名称</th>
-			<th>操作</th>
+			<th>图书名称</th>
+			<th>数量</th>
+			<th>详情</th>
+			<%--    private int id;
+    private String name;
+    private int number;
+    private String detail;--%>
 		</tr>
 		</thead>
 		<tbody>
 		<tr v-if="listData.length>0"  v-for="item in listData">
 			<th scope="row">{{item.id}}</th>
 			<td>{{item.name}}</td>
+			<td>{{item.number}}</td>
+			<td>{{item.detail}}</td>
 			<td>
 				<button v-on:click="editItem(item.id)" class="btn btn-default" >编辑</button>
 				<button v-on:click="deleteItem(item.id)" class="btn btn-default" >删除</button>
@@ -110,18 +123,57 @@
 
 
 <script type="text/javascript">
+    var $returnData;
+    function getData($page,$pageSize){
+        var findName = $('#findName').val();
 
-    function getData($page,$pageSize){//获取数据，可使用各种语言替换^_^
-        var $data = [];
-        for (var $i=($page-1)*$pageSize+1; $i <=$page*$pageSize ; $i++) {
-            $data.push( {
-                id:$i,
-                name:'name'+$i
-            });
-        }
-        var $returnData = {'data':$data,'total':103};
-        return $returnData;
+        $.ajax({
+            type: "post",  //post put get 等等
+            url: "getList",
+            async:false,
+            dataType:"json",
+            data: {
+                "page": $page,
+                "pageSize": $pageSize
+            },
+            success: function (data) {
+                if(0 != data.total){
+                   // for (var i in data.list) {
+                    //    alert(datalist[i].name);
+                  //  }
+                    /* window.parent.location.href = "index";*/
+                    alert(data.total+"")
+                    alert(data.list[0].name+"")
+
+                    /*window.open("toHome", "_self");*/
+                    $returnData = {'data':data.list,'total':data.total};
+                    vm.listItems();
+                } else{
+                    /* $.messager.alert("消息提醒", data.msg, "warning");
+                     $("#vcodeImg").click();//切换验证码
+                     $("input[name='vcode']").val("");//清空验证码输入框*/
+                    alert("没有数据");
+
+                }
+
+            },
+
+        });
+
+
+        /*  var $data = [];
+          for (var $i=($page-1)*$pageSize+1; $i <=$page*$pageSize ; $i++) {
+              $data.push( {
+                  id:$i,
+                  name:'name'+$i
+              });
+          }
+          var $returnData = {'data':$data,'total':103};
+          return $returnData;*/
+
+
     }
+
 
     var vm = new Vue({
         el: '#table',
@@ -142,7 +194,8 @@
         },
         methods:{
             listItems: function () {//列出需要的数据
-                var returnData =getData(this.page,this.pageSize);
+
+                var returnData = $returnData;
                 this.listData = returnData.data;
                 this.total=returnData['total'];
                 this.setPageList(this.total, this.page, this.pageSize);
@@ -213,8 +266,9 @@
     });
 
     window.onload = function(){
+        getData(this.page,this.pageSize);
         console.log('Hello World!');
-        vm.listItems();
+
     };
 </script>
 </body>
