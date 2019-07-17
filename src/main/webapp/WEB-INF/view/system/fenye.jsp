@@ -10,15 +10,16 @@
 	<script src="https://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
 </head>
 <body>
-<div class="input-group">
-	<input type="text" class="form-control" id="findName">
-	<span class="input-group-addon">搜索</span>
-</div>
+
 <div class="bs-example" id="table">
 	<table class="table table-striped">
+        <div class="input-group">
+            <input type="text" class="form-control" id="findName">
+            <span v-on:click="findItem()" class="input-group-addon">搜索</span>
+        </div>
 		<thead>
 		<tr>
-			<th>#</th>
+			<th>id</th>
 			<th>图书名称</th>
 			<th>数量</th>
 			<th>详情</th>
@@ -32,7 +33,7 @@
 		<tr v-if="listData.length>0"  v-for="item in listData">
 			<th scope="row">{{item.id}}</th>
 			<td>{{item.name}}</td>
-			<td>{{item.number}}</td>
+			<td>{{item.num}}</td>
 			<td>{{item.detail}}</td>
 			<td>
 				<button v-on:click="editItem(item.id)" class="btn btn-default" >编辑</button>
@@ -129,12 +130,13 @@
 
         $.ajax({
             type: "post",  //post put get 等等
-            url: "getList",
+            url: "getList?t="+new Date().getTime(),
             async:false,
             dataType:"json",
             data: {
                 "page": $page,
-                "pageSize": $pageSize
+                "pageSize": $pageSize,
+				"findName":findName
             },
             success: function (data) {
                 if(0 != data.total){
@@ -147,7 +149,7 @@
 
                     /*window.open("toHome", "_self");*/
                     $returnData = {'data':data.list,'total':data.total};
-                    vm.listItems();
+
                 } else{
                     /* $.messager.alert("消息提醒", data.msg, "warning");
                      $("#vcodeImg").click();//切换验证码
@@ -194,7 +196,7 @@
         },
         methods:{
             listItems: function () {//列出需要的数据
-
+                getData(this.page,this.pageSize);
                 var returnData = $returnData;
                 this.listData = returnData.data;
                 this.total=returnData['total'];
@@ -205,6 +207,10 @@
             },
             deleteItem:function ($id) {//这里可以删除数据
                 alert('删除第'+$id+'条数据！');
+            },
+            findItem:function(){
+                var findName = $('#findName').val();
+                alert('模糊查询'+findName);
             },
             setPageList: function (total, page, pageSize) {
                 total = parseInt(total);
@@ -266,7 +272,8 @@
     });
 
     window.onload = function(){
-        getData(this.page,this.pageSize);
+        vm.listItems();
+
         console.log('Hello World!');
 
     };
