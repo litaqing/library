@@ -3,11 +3,12 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<title>使用vue2.0与bootstrap3进行简单列表分页</title>
+	<title>借书还书</title>
 	<link href="http://v3.bootcss.com/dist/css/bootstrap.min.css" rel="stylesheet">
 	<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 	<script src="https://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
 	<script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<script src="https://cdn.staticfile.org/vue-resource/1.5.1/vue-resource.min.js"></script>
 
 </head>
 <body>
@@ -19,30 +20,30 @@
             <span v-on:click="findItem()" class="input-group-addon">搜索</span>
 			<span class="input-group-addon" v-on:click="creatItem()">新增</span>
         </div>
-		<!-- 模态框（Modal） -->
+		<!-- 新增模态框（Modal） -->
 		<div class="modal fade" id="myModal">
 			<div class="modal-dialog">
 				<div class="modal-content">
 					<div class="modal-header">
-						<h4 class="modal-title">新增设备信息</h4>
+						<h4 class="modal-title">新增图书</h4>
 						<button type="button" class="close" data-dismiss="modal">&times;</button>
 					</div>
 					<div class="modal-body">
 						<div class="form-group">
-							<label for="txt_departmentname">部门名称</label>
-							<input type="text" name="txt_departmentname" class="form-control" id="txt_departmentname" placeholder="部门名称">
+							<label for="txt_departmentname">图书名称</label>
+							<input v-model="BookData.name" type="text" name="txt_departmentname" class="form-control" id="txt_departmentname" placeholder="图书名称">
 						</div>
 						<div class="form-group">
-							<label for="txt_parentdepartment">上级部门</label>
-							<input type="text" name="txt_parentdepartment" class="form-control" id="txt_parentdepartment" placeholder="上级部门">
+							<label for="txt_parentdepartment">图书数量</label>
+							<input v-model="BookData.num"type="text" name="txt_parentdepartment" class="form-control" id="txt_parentdepartment" placeholder="图书数量">
 						</div>
 						<div class="form-group">
-							<label for="txt_departmentlevel">部门级别</label>
-							<input type="text" name="txt_departmentlevel" class="form-control" id="txt_departmentlevel" placeholder="部门级别">
+							<label for="txt_departmentlevel">图书详情</label>
+							<input v-model="BookData.detail" type="text" name="txt_departmentlevel" class="form-control" id="txt_departmentlevel" placeholder="图书详情">
 						</div>
 						<div class="form-group">
-							<label for="txt_statu">描述</label>
-							<input type="text" name="txt_statu" class="form-control" id="txt_statu" placeholder="状态">
+							<label for="txt_departmentlevel">图书状态</label>
+							<input v-model="BookData.isLend" type="text" name="txt_departmentlevel" class="form-control"  placeholder="图书状态">
 						</div>
 						<div class="modal-footer">
 							<button type="button" class="btn btn-default"
@@ -55,7 +56,44 @@
 			</div>
 
 		</div>
-		<!-- 模态框（Modal） end-->
+		<!-- 新增模态框（Modal） end-->
+		<!-- 编辑模态框（Modal） -->
+		<div class="modal fade" id="updateMyModal">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h4 class="modal-title">编辑图书</h4>
+						<button type="button" class="close" data-dismiss="modal">&times;</button>
+					</div>
+					<div class="modal-body">
+						<div class="form-group">
+							<label for="txt_departmentname">图书名称</label>
+							<input v-model="BookData.name" type="text" name="txt_departmentname" class="form-control"  placeholder="图书名称">
+						</div>
+						<div class="form-group">
+							<label for="txt_parentdepartment">图书数量</label>
+							<input v-model="BookData.num"type="text" name="txt_parentdepartment" class="form-control"  placeholder="图书数量">
+						</div>
+						<div class="form-group">
+							<label for="txt_departmentlevel">图书详情</label>
+							<input v-model="BookData.detail" type="text" name="txt_departmentlevel" class="form-control"  placeholder="图书详情">
+						</div>
+						<div class="form-group">
+							<label for="txt_departmentlevel">图书状态</label>
+							<input v-model="BookData.isLend" type="text" name="txt_departmentlevel" class="form-control" id="txt_isLend" placeholder="图书状态">
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default"
+									data-dismiss="modal">关闭
+							</button>
+							<button type="button" class="btn btn-outline-primary" data-dismiss="modal" v-on:click="updateRow">确认</button>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+		<!-- 编辑模态框（Modal） end-->
 
 		<thead>
 		<tr>
@@ -63,10 +101,7 @@
 			<th>图书名称</th>
 			<th>数量</th>
 			<th>详情</th>
-			<%--    private int id;
-    private String name;
-    private int number;
-    private String detail;--%>
+			<th>图书状态</th>
 		</tr>
 		</thead>
 		<tbody>
@@ -75,9 +110,10 @@
 			<td>{{item.name}}</td>
 			<td>{{item.num}}</td>
 			<td>{{item.detail}}</td>
+			<td>{{item.isLend}}</td>
 			<td>
-				<button v-on:click="editItem(item.id)" class="btn btn-default" >编辑</button>
-				<button v-on:click="deleteItem(item.id)" class="btn btn-default" >删除</button>
+				<button v-on:click="editItem(item.id)" class="btn btn-default" >借书</button>
+				<button v-on:click="deleteItem(item.id)" class="btn btn-default" >还书</button>
 			</td>
 		</tr>
 		<tr>
@@ -167,10 +203,10 @@
     var $returnData;
     function getData($page,$pageSize){
         var findName = $('#findName').val();
-
+        var updateId=0;
         $.ajax({
             type: "post",  //post put get 等等
-            url: "getList?t="+new Date().getTime(),
+            url: "../book/getList?t="+new Date().getTime(),
             async:false,
             dataType:"json",
             data: {
@@ -180,40 +216,14 @@
             },
             success: function (data) {
                 if(0 != data.total){
-                   // for (var i in data.list) {
-                    //    alert(datalist[i].name);
-                  //  }
-                    /* window.parent.location.href = "index";*/
-                    alert(data.total+"")
-                    alert(data.list[0].name+"")
-
-                    /*window.open("toHome", "_self");*/
                     $returnData = {'data':data.list,'total':data.total};
-
                 } else{
-                    /* $.messager.alert("消息提醒", data.msg, "warning");
-                     $("#vcodeImg").click();//切换验证码
-                     $("input[name='vcode']").val("");//清空验证码输入框*/
                     alert("没有数据");
-
                 }
 
             },
 
         });
-
-
-        /*  var $data = [];
-          for (var $i=($page-1)*$pageSize+1; $i <=$page*$pageSize ; $i++) {
-              $data.push( {
-                  id:$i,
-                  name:'name'+$i
-              });
-          }
-          var $returnData = {'data':$data,'total':103};
-          return $returnData;*/
-
-
     }
 
 
@@ -232,7 +242,13 @@
                 pageIndex: [],
                 itemStart: 0,
                 itemEnd: 0
-            }
+            },
+            BookData:{
+                name:"",
+				num:0,
+				detail:"",
+				isLend:""
+			}
         },
         methods:{
             listItems: function () {//列出需要的数据
@@ -242,12 +258,43 @@
                 this.total=returnData['total'];
                 this.setPageList(this.total, this.page, this.pageSize);
             },
-            editItem:function ($id) {//编辑操作在这儿哟
-                alert('编辑第'+$id+'条数据！');
+            editItem:function ($id) {//借书操作在这儿哟
+                updateId=$id;
+                alert("借书");
+                $('#updateMyModal').modal('show');
             },
             deleteItem:function ($id) {//这里可以删除数据
                 alert('删除第'+$id+'条数据！');
+                this.$http.post('../book/toDelBook',{id:$id},{emulateJSON:true}).then(function(res){
+                    if (res.body.msg=="删除成功"){
+                        alert("删除成功");
+                    } else{
+                        alert("删除失败");
+                    }
+                    vm.listItems();
+                },function(res){
+                    console.log(res.status);
+                });
             },
+            updateRow:function(){
+
+                alert('编辑第'+updateId+'条数据！');
+                this.$http.post('../book/toUpdateBook',{id:updateId,name:this.BookData.name,num:this.BookData.num,detail:this.BookData.detail,isLend:this.BookData.isLend},{emulateJSON:true}).then(function(res){
+                    if (res.body.msg=="更改成功"){
+                        alert("编辑成功");
+                    } else{
+                        alert("编辑失败");
+                    }
+                    vm.listItems();
+                    this.BookData.name="";
+                    this.BookData.num=0;
+                    this.BookData.detail="";
+                    this.BookData.isLend="";
+                },function(res){
+                    console.log(res.status);
+                });
+
+			},
             findItem:function(){
                 var findName = $('#findName').val();
                 alert('模糊查询'+findName);
@@ -255,13 +302,24 @@
                 $('#findName').val("")
             },
 			creatItem:function(){
-
-				alert('新增！');
-				$('#myModal').modal('show')
-				/*$('#myModal').modal(options)*/
+				$('#myModal').modal('show');
 			},
             addRow:function(){
-              alert("确认");
+              alert(this.BookData.name+"");
+                this.$http.post('../book/toAddBook',{name:this.BookData.name,num:this.BookData.num,detail:this.BookData.detail,isLend:this.BookData.isLend},{emulateJSON:true}).then(function(res){
+                   if (res.body.msg=="添加成功"){
+                       alert("添加成功");
+				   } else{
+                       alert("添加失败");
+				   }
+                    vm.listItems();
+                   this.BookData.name="";
+                   this.BookData.num=0;
+                   this.BookData.detail="";
+                   this.BookData.isLend="";
+               },function(res){
+                    console.log(res.status);
+                });
 			},
             setPageList: function (total, page, pageSize) {
                 total = parseInt(total);
