@@ -35,8 +35,12 @@
 						</div>
 						<div class="form-group">
 							<label for="txt_parentdepartment">图书数量</label>
-							<input v-model="BookData.num"type="text" name="txt_parentdepartment" class="form-control" id="txt_parentdepartment" placeholder="图书数量">
+							<input v-model="BookData.number"type="text" name="txt_parentdepartment" class="form-control" id="txt_parentdepartment" placeholder="图书数量">
 						</div>
+                        <div class="form-group">
+                            <label for="txt_parentdepartment">已借出数量</label>
+                            <input v-model="BookData.lendNumber"type="text" name="txt_parentdepartment" class="form-control"  placeholder="已借出数量">
+                        </div>
 						<div class="form-group">
 							<label for="txt_departmentlevel">图书详情</label>
 							<input v-model="BookData.detail" type="text" name="txt_departmentlevel" class="form-control" id="txt_departmentlevel" placeholder="图书详情">
@@ -72,8 +76,12 @@
 						</div>
 						<div class="form-group">
 							<label for="txt_parentdepartment">图书数量</label>
-							<input v-model="BookData.num"type="text" name="txt_parentdepartment" class="form-control"  placeholder="图书数量">
+							<input v-model="BookData.number"type="text" name="txt_parentdepartment" class="form-control"  placeholder="图书数量">
 						</div>
+                        <div class="form-group">
+                            <label for="txt_parentdepartment">已借出数量</label>
+                            <input v-model="BookData.lendNumber"type="text" name="txt_parentdepartment" class="form-control"  placeholder="已借出数量">
+                        </div>
 						<div class="form-group">
 							<label for="txt_departmentlevel">图书详情</label>
 							<input v-model="BookData.detail" type="text" name="txt_departmentlevel" class="form-control"  placeholder="图书详情">
@@ -100,6 +108,7 @@
 			<th>id</th>
 			<th>图书名称</th>
 			<th>数量</th>
+            <th>已借出数量</th>
 			<th>详情</th>
 			<th>图书状态</th>
 		</tr>
@@ -108,7 +117,8 @@
 		<tr v-if="listData.length>0"  v-for="item in listData">
 			<th scope="row">{{item.id}}</th>
 			<td>{{item.name}}</td>
-			<td>{{item.num}}</td>
+			<td>{{item.number}}</td>
+            <td>{{item.lendNumber}}</td>
 			<td>{{item.detail}}</td>
 			<td>{{item.isLend}}</td>
 			<td>
@@ -245,9 +255,10 @@
             },
             BookData:{
                 name:"",
-				num:0,
+				number:0,
 				detail:"",
-				isLend:""
+				isLend:"",
+                lendNumber:0
 			}
         },
         methods:{
@@ -261,15 +272,24 @@
             editItem:function ($id) {//借书操作在这儿哟
                 updateId=$id;
                 alert("借书");
-                $('#updateMyModal').modal('show');
-            },
-            deleteItem:function ($id) {//这里可以删除数据
-                alert('删除第'+$id+'条数据！');
-                this.$http.post('../book/toDelBook',{id:$id},{emulateJSON:true}).then(function(res){
-                    if (res.body.msg=="删除成功"){
-                        alert("删除成功");
+                this.$http.post('../book/toLendBook',{id:$id},{emulateJSON:true}).then(function(res){
+                    if (res.body.msg=="借书成功"){
+                        alert("借书成功");
                     } else{
-                        alert("删除失败");
+                        alert(res.body.msg);
+                    }
+                    vm.listItems();
+                },function(res){
+                    console.log(res.status);
+                });
+            },
+            deleteItem:function ($id) {//还书
+                alert('还书第'+$id+'条数据！');
+                this.$http.post('../book/toYetBook',{id:$id},{emulateJSON:true}).then(function(res){
+                    if (res.body.msg=="还书成功"){
+                        alert("还书成功");
+                    } else{
+                        alert("还书失败");
                     }
                     vm.listItems();
                 },function(res){
@@ -279,7 +299,7 @@
             updateRow:function(){
 
                 alert('编辑第'+updateId+'条数据！');
-                this.$http.post('../book/toUpdateBook',{id:updateId,name:this.BookData.name,num:this.BookData.num,detail:this.BookData.detail,isLend:this.BookData.isLend},{emulateJSON:true}).then(function(res){
+                this.$http.post('../book/toUpdateBook',{id:updateId,name:this.BookData.name,number:this.BookData.number,detail:this.BookData.detail,isLend:this.BookData.isLend,lendNumber:this.BookData.lendNumber},{emulateJSON:true}).then(function(res){
                     if (res.body.msg=="更改成功"){
                         alert("编辑成功");
                     } else{
@@ -287,9 +307,10 @@
                     }
                     vm.listItems();
                     this.BookData.name="";
-                    this.BookData.num=0;
+                    this.BookData.number=0;
                     this.BookData.detail="";
                     this.BookData.isLend="";
+                    this.BookData.lendNumber=0;
                 },function(res){
                     console.log(res.status);
                 });
@@ -306,7 +327,7 @@
 			},
             addRow:function(){
               alert(this.BookData.name+"");
-                this.$http.post('../book/toAddBook',{name:this.BookData.name,num:this.BookData.num,detail:this.BookData.detail,isLend:this.BookData.isLend},{emulateJSON:true}).then(function(res){
+                this.$http.post('../book/toAddBook',{name:this.BookData.name,number:this.BookData.number,detail:this.BookData.detail,isLend:this.BookData.isLend,lendNumber:this.BookData.lendNumber},{emulateJSON:true}).then(function(res){
                    if (res.body.msg=="添加成功"){
                        alert("添加成功");
 				   } else{
@@ -314,9 +335,10 @@
 				   }
                     vm.listItems();
                    this.BookData.name="";
-                   this.BookData.num=0;
+                   this.BookData.number=0;
                    this.BookData.detail="";
                    this.BookData.isLend="";
+                   this.BookData.lendNumber=0;
                },function(res){
                     console.log(res.status);
                 });
