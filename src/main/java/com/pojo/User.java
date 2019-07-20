@@ -1,6 +1,5 @@
 package com.pojo;
 
-import com.page.Page;
 import org.springframework.stereotype.Repository;
 
 import java.io.Serializable;
@@ -11,7 +10,7 @@ public class User implements Serializable {
 
     private Integer id;
     private String userName;
-    private String password;
+    private String passWord;
 
     public Integer getId() {
         return id;
@@ -29,13 +28,20 @@ public class User implements Serializable {
         this.userName = userName;
     }
 
-    public String getPassword() {
-        return password;
+    public String getPassWord() {
+        return passWord;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setPassWord(String passWord) {
+        this.passWord = passWord;
     }
 
-
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", userName='" + userName + '\'' +
+                ", passWord='" + passWord + '\'' +
+                '}';
+    }
 }

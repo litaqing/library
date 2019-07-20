@@ -32,35 +32,29 @@
 
     <script>
         function register(){
-            window.open("register", "_self");
+            window.open("toRegister", "_self");
         }
 
         function login() {
 
             var userName = $('#user').val();
-            var password = $('#password').val();
+            var passWord = $('#passWord').val();
 
             $.ajax({
                 type: "post",  //post put get 等等
-                url: "login",
+                url: "../system/login",
                 async:false,
                 dataType:"json",
                 data: {
                     "userName": userName,
-                    "password": password
+                    "passWord": passWord
                 },
                 success: function (data) {
                     if("success" == data.type){
-                        /* window.parent.location.href = "index";*/
                         alert(data.msg+"")
-
-                        /*window.open("toHome", "_self");*/
                         window.location.href="http://localhost:8080/system/toHome";
 
                     } else{
-                        /* $.messager.alert("消息提醒", data.msg, "warning");
-                         $("#vcodeImg").click();//切换验证码
-                         $("input[name='vcode']").val("");//清空验证码输入框*/
                         alert(data.msg+"");
 
                     }
@@ -86,7 +80,7 @@
                     </div>
                     <div class="form-group">
                         <i class="fa fa-lock fa-lg"></i>
-                        <input class="form-control required" type="password" placeholder="Password" id="password" name="password" maxlength="8" />
+                        <input class="form-control required" type="password" placeholder="passWord" id="passWord" name="passWord" maxlength="8" />
                     </div>
                     <div class="form-group">
                         <label class="checkbox">

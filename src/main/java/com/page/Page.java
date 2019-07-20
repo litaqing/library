@@ -1,30 +1,52 @@
 package com.page;
 
 
-public class Page {
-    //每页显示数量
-    private int limit;
-    //页码
-    private int page;
-    //sql语句起始索引
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
+
+import java.io.Serializable;
+
+@Repository
+public class Page implements Serializable {
+    private int page;//当前页面
+
+    private int pageSize;//每页显示数量
+
     private int offset;
-    public int getLimit() {
-        return limit;
-    }
-    public void setLimit(int limit) {
-        this.limit = limit;
-    }
+
+
+
     public int getPage() {
         return page;
     }
+
     public void setPage(int page) {
         this.page = page;
     }
-    public int getOffset() {
-        return offset;
-    }
-    public void setOffset(int offset) {
-        this.offset = offset;
+
+    public int getPageSize() {
+        return pageSize;
     }
 
+    public void setPageSize(int pageSize) {
+        this.pageSize = pageSize;
+    }
+
+    public int getOffset() {
+        this.offset = (page -1)*pageSize;
+        return offset;
+    }
+
+    public void setOffset(int offset) {
+        this.offset = (page -1)*pageSize;
+    }
+
+    @Override
+    public String toString() {
+        return "Page{" +
+                "page=" + page +
+                ", pageSize=" + pageSize +
+                ", offset=" + offset +
+                '}';
+    }
 }

@@ -99,9 +99,9 @@
             <div class="row clearfix">
                 <div class="col-md-2 column">
                     <div class="list-group">
-                        <a href="toTestTarget" target="main-iframe" class="list-group-item active">图书展示</a>
-                        <a href="#" class="list-group-item ">管理员操作</a>
-                        <a href="#" class="list-group-item ">图书展示</a>
+                        、<a href="toTestTarget" target="main-iframe" class="list-group-item active">图书管理</a>
+                        <a href="toFenye" target="main-iframe" class="list-group-item ">借书还书</a>
+                        <a href="#" class="list-group-item ">购物车</a>
                         <div class="list-group-item">
                             List header
                         </div>
@@ -119,7 +119,7 @@
                         <a class="list-group-item active"> <span class="badge">14</span> Help</a>
                     </div>
                 </div>
-                <iframe name="main-iframe" src="toFenye"  class="embed-responsive-item" width="80%" height="700" frameborder="no" scrolling="no" allowtransparency="yes">
+                <iframe name="main-iframe" src="toTestTarget"  class="embed-responsive-item" width="80%" height="700" frameborder="no" scrolling="no" allowtransparency="yes">
                 </iframe>
             </div>
         </div>

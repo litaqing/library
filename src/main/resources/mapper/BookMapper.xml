@@ -6,11 +6,13 @@
     <resultMap type="Book" id="bookResultMap" >
         <id property="id" column="id"/>
         <result property="name" column="name"/>
-        <result property="num" column="number"/>
+        <result property="number" column="number"/>
         <result property="detail" column="detail"/>
+        <result property="isLend" column="isLend"/>
+        <result property="lendNumber" column="lendNumber"/>
     </resultMap>
     <insert id="addBook" parameterType="Book">
-        INSERT INTO book(id,name,number,detail) VALUE (#{id},#{name}, #{num}, #{detail})
+        INSERT INTO book(id,name,number,detail,isLend,lendNumber) VALUE (#{id},#{name}, #{number}, #{detail},#{isLend},#{lendNumber})
     </insert>
 
     <delete id="deleteBookById" parameterType="int">
@@ -19,28 +21,32 @@
 
     <update id="updateBook" parameterType="Book">
         UPDATE book
-        SET NAME = #{name},NUMBER = #{num},detail = #{detail}
+        SET NAME = #{name},NUMBER = #{number},detail = #{detail},isLend=#{isLend},lendNumber=#{lendNumber}
         WHERE  id = #{id}
     </update>
 
     <select id="queryById" resultType="Book" parameterType="int">
-        SELECT id,name,number,detail
+        SELECT id,name,number,detail,isLend,lendNumber
         FROM book
         WHERE id=#{id}
     </select>
     <select id="queryAllBook" resultMap="bookResultMap">
-        SELECT id,name,number,detail
+        SELECT id,name,number,detail,isLend,lendNumber
         FROM book
     </select>
     <select id="findList" resultMap="bookResultMap">
-        SELECT id,name,number,detail
-        FROM book
-
-
+        SELECT id,name,number,detail,isLend,lendNumber
+        FROM book where
+        <if test="findName !=null">
+             name like #{findName}
+        </if>
+        limit #{offset},#{pageSize}
     </select>
     <select id="getTotal" parameterType="Map"  resultType="Integer">
-        SELECT count(id) FROM book
-
+        SELECT count(id) FROM book where
+        <if test="findName !=null">
+            name like #{findName}
+        </if>
     </select>
 
 </mapper>

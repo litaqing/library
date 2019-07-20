@@ -26,5 +26,8 @@
     <select id="findByUserName" parameterType="String" resultType="User">
   		select * from user where userName = #{userName}
   	</select>
+    <insert id="addUser" parameterType="User">
+        INSERT INTO user(userName,passWord) VALUE (#{userName},#{passWord})
+    </insert>
 
 </mapper>

@@ -7,8 +7,10 @@ import java.io.Serializable;
 public class Book implements Serializable {
     private int id;
     private String name;
-    private int num;
+    private int number;
     private String detail;
+    private String isLend;
+    private int lendNumber;
 
     public int getId() {
         return id;
@@ -26,12 +28,12 @@ public class Book implements Serializable {
         this.name = name;
     }
 
-    public int getNum() {
-        return num;
+    public int getNumber() {
+        return number;
     }
 
-    public void setNum(int num) {
-        this.num = num;
+    public void setNumber(int number) {
+        this.number = number;
     }
 
     public String getDetail() {
@@ -42,5 +44,31 @@ public class Book implements Serializable {
         this.detail = detail;
     }
 
+    public String getIsLend() {
+        return isLend;
+    }
 
+    public void setIsLend(String isLend) {
+        this.isLend = isLend;
+    }
+
+    public int getLendNumber() {
+        return lendNumber;
+    }
+
+    public void setLendNumber(int lendNumber) {
+        this.lendNumber = lendNumber;
+    }
+
+    @Override
+    public String toString() {
+        return "Book{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", number=" + number +
+                ", detail='" + detail + '\'' +
+                ", isLend='" + isLend + '\'' +
+                ", lendNumber=" + lendNumber +
+                '}';
+    }
 }

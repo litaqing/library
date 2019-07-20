@@ -1,5 +1,6 @@
 package com.controller;
 
+
 import com.pojo.User;
 import com.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,6 +18,7 @@ import java.util.Map;
 public class SystemController {
     @Autowired
     private UserService userService;
+
 
 
     @RequestMapping(value = "/login",method= RequestMethod.POST)
@@ -53,17 +54,13 @@ public class SystemController {
 
                 return ret;
             }
-            if(!user1.getPassword().equals(user.getPassword())){
-                System.out.println(user1.getPassword());
-                System.out.println(user.getPassword());
+            if(!user1.getPassWord().equals(user.getPassWord())){
+                System.out.println(user1.getPassWord());
+                System.out.println(user.getPassWord());
                 ret.put("type", "error");
                 ret.put("msg", "密码错误!");
-
                 return ret;
             }
-
-
-
         ret.put("type", "success");
         ret.put("msg", "登录成功!");
 
@@ -80,12 +77,52 @@ public class SystemController {
         model.setViewName("system/login");
         return model;
     }
-    @RequestMapping(value = "/register",method=RequestMethod.GET)
-    public ModelAndView register(ModelAndView model,HttpServletRequest request){
-        model.setViewName("system/register");
-        System.out.println("进来了");
+    @RequestMapping(value = "/toRegister",method=RequestMethod.GET)
+    public String register(){
+        return "system/register";
+    }
+    @RequestMapping(value = "/register",method= RequestMethod.POST)
+    @ResponseBody
+    public Map<String,String> register(
+            User user,
+            HttpServletRequest request
+    ){
+        System.out.println(user);
         String url = request.getRequestURI();
         System.out.println("url = " + url);
+        Map<String, String> ret = new HashMap<String, String>();
+        if(StringUtils.isEmpty(user.getUserName())){
+            ret.put("type", "error");
+            ret.put("msg", "用户名不能为空!");
+
+            return ret;
+        }
+        if(StringUtils.isEmpty(user.getPassWord())){
+            ret.put("type", "error");
+            ret.put("msg", "密码不能为空!");
+            return ret;
+        }
+        userService.addUser(user);
+        ret.put("type", "success");
+        ret.put("msg", "注册成功!");
+        return ret;
+    }
+
+    @RequestMapping(value = "/toFenye",method=RequestMethod.GET)
+    public ModelAndView toFenye(ModelAndView model){
+        model.setViewName("system/bookCirculate");
         return model;
     }
+
+
+    @RequestMapping(value = "/toTestTarget",method=RequestMethod.GET)
+    public ModelAndView toTestTarget(ModelAndView model){
+        model.setViewName("system/bookUpdate");
+        return model;
+    }
+
+
+
+
+
 }

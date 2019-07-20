@@ -8,5 +8,5 @@ import java.util.Map;
 
 public interface UserDao {
     User findByUserName(String userName);
-
+    int addUser(User user);
 }

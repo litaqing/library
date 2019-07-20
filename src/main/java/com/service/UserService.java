@@ -8,4 +8,5 @@ import java.util.Map;
 
 public interface UserService {
     User findByUserName(String userName);
+    int addUser(User user);
 }
